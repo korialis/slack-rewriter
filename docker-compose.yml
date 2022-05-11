@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    container_name: slack_rewriter_web
+    volumes:
+      - .:/$PWD
+      - .:/code
+      - "~/.ssh:/home/app/.ssh"
+      - "~/.aws:/home/app/.aws"
+      - "~/.gitconfig:/home/app/.gitconfig"
+      - ~/.cache:/home/app/.cache
+    working_dir: $PWD
+    ports:
+      - 4010:8080
+    environment:
+      APP_ENV: dev
+    depends_on:
+      - postgres
+    networks:
+      - default
+
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    image: public.ecr.aws/bitnami/postgresql:12
+    ports:
+      - 5554:5432
+
