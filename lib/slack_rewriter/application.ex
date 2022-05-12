@@ -12,14 +12,10 @@ defmodule SlackRewriter.Application do
       SlackRewriter.Support.Vault,
       # Start the Ecto repository
       SlackRewriter.Repo,
-      # Start the Telemetry supervisor
-      SlackRewriterWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: SlackRewriter.PubSub},
       # Start the Endpoint (http/https)
       SlackRewriterWeb.Endpoint
-      # Start a worker by calling: SlackRewriter.Worker.start_link(arg)
-      # {SlackRewriter.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

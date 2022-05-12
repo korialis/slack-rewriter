@@ -43,10 +43,7 @@ config :slack_rewriter, SlackRewriterWeb.Endpoint,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "9AaCuT9hxM8+KOANKiqx/adOB9hiurkCXMqoA1rpwbUh6RVmy7mil6bgtP/xnpSU",
-  watchers: [
-    # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
-  ]
+  watchers: []
 
 # ## SSL Support
 #
