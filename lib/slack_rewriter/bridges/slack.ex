@@ -54,26 +54,21 @@ defmodule SlackRewriter.Bridge.Slack do
 
   @spec get_post_ephemeral_req_body(String.t(), String.t()) :: String.t()
   defp get_post_ephemeral_req_body(user, channel) do
-    {:ok, json} =
-      Jason.encode(%{
-        user: user,
-        channel: channel,
-        text: "Please install the rewriter bot @ #{@slack_oauth_redirect}"
-      })
-
-    json
+    Jason.encode!(%{
+      user: user,
+      channel: channel,
+      text:
+        "To automatically rewrite youtrack board carts link (the one in this message will break at the end of sprint), please install the rewriter bot @ #{@slack_oauth_redirect}"
+    })
   end
 
   @spec get_update_message_req_body(String.t(), String.t(), String.t()) :: String.t()
   defp get_update_message_req_body(channel, timestamp, text) do
-    {:ok, json} =
-      Jason.encode(%{
-        channel: channel,
-        ts: timestamp,
-        text: text
-      })
-
-    json
+    Jason.encode!(%{
+      channel: channel,
+      ts: timestamp,
+      text: text
+    })
   end
 
   @spec get_oauth_token_req_body(String.t()) :: String.t()
