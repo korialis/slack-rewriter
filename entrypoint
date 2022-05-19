@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+source ./config/secrets.env
+
+if [ "$1" == "mix" ]; then
+  exec "$@"
+elif [ -n "$1" ]; then
+  sh -c "$@"
+else
+
+  mix deps.get
+  mix ecto.setup
+  mix phx.server
+
+  trap : TERM INT; sleep infinity & wait
+fi
