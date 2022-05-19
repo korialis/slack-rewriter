@@ -16,6 +16,12 @@ defmodule SlackRewriter.Bridge.Slack do
 
   @type response :: {:ok, term()} | {:error, String.t()}
 
+  @slack_user_auth_errors [
+    "token_expired",
+    "token_revoked",
+    "invalid_auth"
+  ]
+
   @spec oauth_redirect() :: String.t()
   def oauth_redirect, do: @slack_oauth_redirect
 
@@ -29,7 +35,7 @@ defmodule SlackRewriter.Bridge.Slack do
   end
 
   @spec update_message(String.t(), String.t(), String.t(), String.t()) :: response()
-  def update_message(token, channel, timestamp, text) do
+  def update_message(text, token, channel, timestamp) do
     body = get_update_message_req_body(channel, timestamp, text)
 
     @slack_update_message
@@ -58,7 +64,7 @@ defmodule SlackRewriter.Bridge.Slack do
       user: user,
       channel: channel,
       text:
-        "To automatically rewrite youtrack board carts link (the one in this message will break at the end of sprint), please install the rewriter bot @ #{@slack_oauth_redirect}"
+        "To automatically rewrite youtrack board cards link (the one in this message will break at the end of sprint), please install the rewriter bot @ #{@slack_oauth_redirect}"
     })
   end
 
@@ -78,7 +84,11 @@ defmodule SlackRewriter.Bridge.Slack do
 
   @spec response({:ok, HTTPoison.Response.t()} | {:error, HTTPoison.Error.t()}) :: response()
   defp response({:ok, %HTTPoison.Response{status_code: 200, body: body_string}}) do
-    Jason.decode(body_string, keys: :atoms)
+    case Jason.decode(body_string) do
+      {:ok, res = %{"ok" => true}} -> {:ok, res}
+      {:ok, %{"ok" => false, "error" => reason}} -> {:error, get_slack_aggregated_error(reason)}
+      {:error, reason} -> {:error, reason}
+    end
   end
 
   defp response({:ok, %HTTPoison.Response{status_code: code, body: body_string}}) do
@@ -87,5 +97,14 @@ defmodule SlackRewriter.Bridge.Slack do
 
   defp response({:error, %HTTPoison.Error{reason: reason}}) do
     {:error, "HTTP error #{reason}"}
+  end
+
+  @spec get_slack_aggregated_error(String.t()) :: String.t()
+  defp get_slack_aggregated_error(error) when error in @slack_user_auth_errors do
+    "user_not_authorized"
+  end
+
+  defp get_slack_aggregated_error(error) do
+    error
   end
 end
