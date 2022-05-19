@@ -41,7 +41,6 @@ defmodule SlackRewriterWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
 
-    # add plug to verify app authenticity (either by token or signed secret)
     plug :slack_verifier
   end
 

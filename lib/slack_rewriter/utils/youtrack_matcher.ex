@@ -2,8 +2,6 @@ defmodule SlackRewriter.Utils.YoutrackMatcher do
   @moduledoc """
   Youtrack card link matching utility
   """
-
-  # @card_regex ~r/youtrack\/\S*\/\S*\/\S*issue=(?<card_id>\S*-\S*)/imu
   @card_regex ~r/youtrack\/\S*issue=(?<card_id>\S*-\S*)/imu
 
   @doc ~S"""
